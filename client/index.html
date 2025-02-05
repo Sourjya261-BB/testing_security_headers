@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS, CSP, and X-Content-Type-Options Test</title>
+    <style>
+        iframe {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ccc;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>CORS, CSP, and X-Content-Type-Options Test Client</h1>
+    <button id="simple-cors">Fetch Simple CORS Data</button>
+    <button id="complex-cors">Fetch Complex CORS Data</button>
+    <button id="csp-example">Test CSP Header</button>
+    <button id="negative-case">Test Negative Case (No nosniff)</button>
+    <button id="positive-case">Test Positive Case (With nosniff)</button>
+    <p id="response"></p>
+    <iframe id="content-frame" style="display: none;"></iframe>
+
+    <script>
+        const frame = document.getElementById('content-frame');
+
+        document.getElementById('simple-cors').addEventListener('click', () => {
+            fetch('http://localhost:3000/simple_cors/get_data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('response').innerText = JSON.stringify(data);
+                })
+                .catch(error => {
+                    document.getElementById('response').innerText = 'Error: ' + error.message;
+                });
+        });
+
+        document.getElementById('complex-cors').addEventListener('click', () => {
+            fetch('http://localhost:3000/complex_cors/get_data')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('CORS error: Origin not allowed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('response').innerText = JSON.stringify(data);
+                })
+                .catch(error => {
+                    document.getElementById('response').innerText = 'Error: ' + error.message;
+                });
+        });
+
+        document.getElementById('csp-example').addEventListener('click', () => {
+            const enableCSP = confirm('Enable CSP header? Click OK for yes, Cancel for no.');
+            const url = `http://localhost:3000/csp_example?csp=${enableCSP}`;
+            frame.style.display = 'block';
+            frame.src = url; // Load the CSP example in the iframe
+        });
+
+        document.getElementById('negative-case').addEventListener('click', () => {
+            frame.style.display = 'block';
+            frame.src = 'http://localhost:3000/negative_case'; // Load the negative case in the iframe
+        });
+
+        document.getElementById('positive-case').addEventListener('click', () => {
+            frame.style.display = 'block';
+            frame.src = 'http://localhost:3000/positive_case'; // Load the positive case in the iframe
+        });
+    </script>
+</body>
+</html>

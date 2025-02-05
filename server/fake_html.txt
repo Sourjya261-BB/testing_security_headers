@@ -1,0 +1,10 @@
+<html>
+<head><title>Injected Page</title></head>
+<body>
+    <h1>Fake HTML Executed!</h1>
+    <script>
+        console.log("🚨 Malicious JavaScript executed!");
+        alert("🚨 Security Breach! This should not run.");
+    </script>
+</body>
+</html>
