@@ -63,7 +63,6 @@ app.get('/csp_example', cors(corsOptionsDelegate), (req, res) => {
 // Negative Case: Serve fake JavaScript file without nosniff
 app.get('/negative_case',cors(corsOptionsDelegate),(req, res) => {
     const filePath = path.join(__dirname, 'fake_html.txt');
-    res.setHeader('Content-Type', 'image/png'); // Incorrect MIME type
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate'); // Disable caching
     res.setHeader('Pragma', 'no-cache'); // For HTTP/1.0
     res.setHeader('Expires', '0'); // Expire immediately
